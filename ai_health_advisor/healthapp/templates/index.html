@@ -46,7 +46,7 @@
     font-size: 1.25rem;
     opacity: 0.9;
     margin-bottom: 2.0rem;
-    max-width: 50vw;
+    width: 50vw;
     line-height: 1.6;
     justify-content: center;
     text-align: center ;
@@ -153,8 +153,26 @@
     height: 2px;
     background: #16634f;
 }
-
-
+@media (max-width: 768px) {
+    .hero{
+    background-image: url("{% static 'bg.jpeg' %}");
+    background-size: cover;
+    background-position: left;
+    background-repeat: no-repeat;
+    }
+    .hero-title {
+        justify-self: center;
+        width: 100vw;
+    }
+    .hero-subtitle {
+        justify-self: center;
+        width: 100vw;
+    }
+    .hero-cta {
+        justify-self: center;
+        width: 100vw;
+    }
+}
 </style>
 {% endblock %}
 
