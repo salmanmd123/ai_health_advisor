@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Health History – AI Health Advisor{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient( #16634f, #15a07b 60%, #20bd93 100%);
+    padding: 2rem; color: white; text-align: center;
+}
+.page-header h1 { font-family:'Poppins',sans-serif; font-size:1.8rem; font-weight:700; }
+.history-card {
+    border:1px solid #eef2f7; border-radius:14px;
+    padding:1.5rem; margin-bottom:1rem; background:white;
+    transition:transform .2s, box-shadow .2s;
+    border-left:4px solid #ddd;
+}
+.history-card:hover { transform:translateX(4px); box-shadow:0 4px 20px rgba(15,76,129,.1); }
+.history-card.mild { border-left-color:#27ae60; }
+.history-card.moderate { border-left-color:#f39c12; }
+.history-card.severe { border-left-color:#e74c3c; }
+.history-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem; }
+.history-date { font-size:.85rem; color:#7f8c8d; display:flex; align-items:center; gap:6px; }
+.history-symptoms { font-size:.875rem; color:#555; margin:.5rem 0; }
+.history-conditions { font-size:.9rem; font-weight:600; color:#16634f; }
+.empty-state { text-align:center; padding:4rem 2rem; }
+.empty-state .es-icon { font-size:5rem; margin-bottom:1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div style="font-size:2rem;margin-bottom:.5rem;">📋</div>
+    <h1>Your Health History</h1>
+    <p style="opacity:.85;margin-top:.5rem;">Track all your past symptom checks</p>
+</div>
+
+<div class="main-content">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+        <div>
+            <strong style="color:black;">{{ history|length }}</strong>
+            <span style="color:#7f8c8d;"> total check{{ history|length|pluralize }}</span>
+        </div>
+        <a href="{% url 'symptom_check' %}" class="btn btn-accent btn-sm">
+            <i class="fas fa-plus"></i> New Check
+        </a>
+    </div>
+
+    {% if history %}
+        {% for check in history %}
+        <div class="history-card {{ check.severity }}">
+            <div class="history-header">
+                <div class="history-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    {{ check.checked_at|date:"F d, Y – H:i" }}
+                </div>
+                <span class="badge badge-{{ check.severity }}">{{ check.severity|capfirst }}</span>
+            </div>
+            <div class="history-conditions">
+                🏥 {{ check.possible_conditions|default:"No specific conditions detected" }}
+            </div>
+            <div class="history-symptoms">
+                <strong style="color:#7f8c8d;font-size:.8rem;">SYMPTOMS DETECTED:</strong>
+                {{ check.detected_symptoms|default:"Not recorded" }}
+            </div>
+            <details style="margin-top:.75rem;">
+                <summary style="cursor:pointer;font-size:.85rem;color:#16634f;font-weight:600;">
+                    View Full Input & Advice
+                </summary>
+                <div style="margin-top:.75rem;background:#f8f9fa;border-radius:10px;padding:1rem;">
+                    <p style="font-size:.8rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;margin-bottom:.5rem;">Your Input:</p>
+                    <p style="font-size:.875rem;color:#555;font-style:italic;">"{{ check.symptoms_input }}"</p>
+                    <p style="font-size:.8rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;margin:.75rem 0 .5rem;">Advice Given:</p>
+                    <p style="font-size:.875rem;color:#555;">{{ check.advice|truncatechars:300 }}</p>
+                </div>
+            </details>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card empty-state">
+            <div class="es-icon">🔍</div>
+            <h3 style="color:#16634f;margin-bottom:.5rem;">No History Yet</h3>
+            <p style="color:#7f8c8d;margin-bottom:1.5rem;">You haven't done any symptom checks yet. Start now to track your health.</p>
+            <a href="{% url 'symptom_check' %}" class="btn btn-primary">
+                <i class="fas fa-stethoscope"></i> Check Symptoms Now
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

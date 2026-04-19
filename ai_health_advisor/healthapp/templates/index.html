@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}AI Health Advisor – Smart Symptom Analysis{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero {
+    background-image: url("{% static 'bg.jpeg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    padding: 5rem 2rem;
+    text-align: center;
+    align-content: center;
+    color: #16634f;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    pointer-events: none;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 60%);
+    animation: pulse 6s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+.hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    position: relative;
+    justify-content: center;
+    width: 50vw;
+}
+.hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 2.0rem;
+    max-width: 50vw;
+    line-height: 1.6;
+    justify-content: center;
+    text-align: center ;
+}
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; width: 50vw;}
+
+.section{
+    background-image: url("{% static 'bg2.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.features-section { 
+    padding: 4rem 2rem;
+    max-width: 1200px; 
+    margin: 0 auto;
+ }
+
+.section-title {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: black;
+    margin-bottom: 0.5rem;
+}
+.section-subtitle {
+    text-align: center;
+    color: #16634f;
+    margin-bottom: 3rem;
+    font-size: 1rem;
+}
+.feature-card {
+    background: #F5F7F6;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0px 0px 20px -10px #16634f;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid #eef2f7;
+}
+.feature-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(15,76,129,0.15); }
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 1.25rem;
+}
+.feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: black;}
+.feature-card p { color: #16634f; font-size: 0.9rem; line-height: 1.6; }
+
+.how-it-works { 
+    border: 1px solid lightgray;
+    box-shadow: 0px 0px 20px -5px #16634f;
+    border-radius: 20px;
+    padding: 4rem 2rem;
+     color: #16634f;
+     margin: 0px 50px;
+     }
+.steps-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; max-width: 1000px; margin: 2rem auto 0; }
+.step { text-align: center; }
+.step-number {
+    width: 50px; height: 50px;
+    background: #16634f;
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800; margin: 0 auto 1rem;
+    border: 2px solid rgba(255,255,255,0.4);
+}
+.step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.step p { font-size: 0.85rem; opacity: 0.8; }
+
+.disclaimer {
+    background: #F5F7F6;
+    border-left: 4px solid black;
+    padding: 1.5rem 2rem;
+    margin: 2rem 3rem;
+    border-radius: 0 12px 12px 0;
+}
+.disclaimer strong { color: black; }
+
+@media(max-width:768px){
+    .hero-title { font-size: 2rem; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.step {
+    position: relative;
+    text-align: center;
+}
+
+.step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 25px; 
+    right: -50%;
+    width: 91%;
+    height: 2px;
+    background: #16634f;
+}
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1 class="hero-title">AI Health Advisor</h1>
+    <p class="hero-subtitle">Describe your symptoms and receive intelligent, personalized health insights powered by Natural Language Processing and Machine Learning.</p>
+    <div class="hero-cta">
+        <a href="{% url 'user_register' %}" class="btn btn-lg" style="background:#16634f;color:white;font-weight:700;">
+            <i class="fas fa-user-plus"></i> Get Started Free
+        </a>
+        <a href="{% url 'user_login' %}" class="btn btn-lg btn-outline" style="border-color:#16634f;color:#16634f;">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+        </a>
+    </div>
+</div>
+<section class="section">
+<section class="features-section">
+    <h2 class="section-title">Why Choose AI Health Advisor?</h2>
+    <p class="section-subtitle">Smart technology for better health decisions</p>
+    <div class="grid-3">
+        <div class="feature-card">
+            <div class="feature-icon" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);">🧠</div>
+            <h3>NLP-Powered Analysis</h3>
+            <p>Advanced Natural Language Processing understands your symptom descriptions and extracts key health indicators.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">📊</div>
+            <h3>Visual Health Reports</h3>
+            <p>Interactive charts and visualizations (Seaborn + Matplotlib) show your symptom match confidence clearly.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);">⚡</div>
+            <h3>Instant Results</h3>
+            <p>Get AI-generated health advice within seconds. No waiting rooms, no appointments needed.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background:linear-gradient(135deg,#fce4ec,#f8bbd9);">🔒</div>
+            <h3>Secure & Private</h3>
+            <p>Your health data is stored securely using Django's robust security framework with session management.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);">📈</div>
+            <h3>Track Your Health</h3>
+            <p>Maintain a complete history of all your symptom checks and monitor health patterns over time.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon" style="background:linear-gradient(135deg,#e0f7fa,#b2ebf2);">🩺</div>
+            <h3>10+ Conditions</h3>
+            <p>Identifies potential conditions from Common Cold and Flu to Hypertension, UTI, Anxiety, and more.</p>
+        </div>
+    </div>
+</section>
+
+<div class="how-it-works">
+    <h2 class="section-title" style="color:black;">How It Works</h2>
+    <div class="steps-grid">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h4>Register</h4>
+            <p>Create your free account in under a minute</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h4>Describe Symptoms</h4>
+            <p>Type your symptoms in plain English</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h4>AI Analysis</h4>
+            <p>NLP engine extracts and scores symptoms</p>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <h4>Get Advice</h4>
+            <p>Receive detailed guidance and next steps</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="disclaimer">
+    <p><strong>⚠️ Medical Disclaimer:</strong> AI Health Advisor is designed for informational purposes only. It does not replace professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical concerns.</p>
+</div>
+{% endblock %}
+</section>
+

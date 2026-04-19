@@ -1,0 +1,312 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Health Advisor{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f4c81;
+            --primary-light: #1a6fba;
+            --accent: #00b4d8;
+            --accent-light: #90e0ef;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --muted: #7f8c8d;
+            --border: #dde3ea;
+            --radius: 16px;
+            --shadow: 0 4px 24px rgba(15,76,129,0.10);
+            --shadow-lg: 0 8px 40px rgba(15,76,129,0.15);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F5F7F6;
+            color: #16634f;
+            min-height: 100vh;
+        }
+        /* NAVBAR */
+        .navbar {
+            background: #F5F7F6;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(15,76,129,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #16634f;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        .nav-brand .brand-icon {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: #16634f;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover { background: rgba(255,255,255,0.15); color: black; }
+        .nav-links a.active { background: rgba(255,255,255,0.2); color: black; }
+        .btn-nav-cta {
+            background: #16634f !important;
+            color: white !important;
+            font-weight: 600 !important;
+            margin-left: 20px;
+        }
+        .btn-nav-cta:hover { background: #1d9777 !important; transform: translateY(-1px); }
+
+        /* MESSAGES */
+        .messages-container { padding: 1rem 2rem 0; }
+        .alert {
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+
+        /* MAIN CONTENT */
+        .main-content { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+
+        /* CARDS */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow:  0 0px 20px -10px #16634f;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--bg);
+        }
+        .card-header h2 { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #16634f, #15a07b);
+            color: white;
+        }
+
+        /* FORMS */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .form-control {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fafbfc;
+            color: var(--text);
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #36d3a9;
+            box-shadow: 0 0 0 3px rgba(0,180,216,0.12);
+            background: white;
+        }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        select.form-control { cursor: pointer; }
+
+        /* BUTTONS */
+        .btn {
+            padding: 11px 24px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #16634f, #15a07b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(15,76,129,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(15,76,129,0.4); }
+        .btn-accent {
+            background: linear-gradient(135deg, #16634f, #15a07b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,180,216,0.3);
+        }
+        .btn-accent:hover { transform: translateY(-2px); }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #16634f;
+            color: #16634f;
+        }
+        .btn-outline:hover { background: #1d9676; color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 7px 16px; font-size: 0.85rem; }
+        .btn-lg { padding: 14px 32px; font-size: 1.05rem; }
+        .btn-block { width: 100%; justify-content: center; }
+
+        /* BADGES */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-mild { background: #d4efdf; color: #1e8449; }
+        .badge-moderate { background: #fdebd0; color: #b7770d; }
+        .badge-severe { background: #fadbd8; color: #c0392b; }
+
+        /* TABLES */
+        .table { width: 100%; border-collapse: collapse; }
+        .table th {
+            background: var(--bg);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: var(--muted);
+        }
+        .table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .table tr:last-child td { border-bottom: none; }
+        .table tr:hover td { background: #f8fbff; }
+
+        /* FOOTER */
+        .footer {
+            background: #16634f;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            margin-top: 3rem;
+        }
+        .footer strong { color: white; }
+
+        /* GRID */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .main-content { padding: 1rem; }
+            .navbar { padding: 0 1rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<nav class="navbar">
+    <a href="{% url 'index' %}" class="nav-brand">
+        <div class="brand-icon"><img src="{% static 'hospital.svg' %}" alt="Hospital Icon" height="100%"></div>
+        <h3>AI HEALTH ADVISOR</h3>
+    </a>
+    <ul class="nav-links">
+        {% if request.session.loginid %}
+            <li><a href="{% url 'user_home' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="{% url 'symptom_check' %}" class="btn-nav-cta"><i class="fas fa-stethoscope"></i> Check Symptoms</a></li>
+            <li><a href="{% url 'user_history' %}"><i class="fas fa-history"></i> History</a></li>
+            <li><a href="{% url 'user_profile' %}"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="{% url 'user_logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="{% url 'user_login' %}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li><a href="{% url 'user_register' %}" class="btn-nav-cta"><i class="fas fa-user-plus"></i> Register</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+    <p>© 2026 <strong>AI Health Advisor</strong> &nbsp;|&nbsp; Developed by <strong>Mohammed Salman, Shaik Muyeed, Syed Usaid</strong></p>
+    <p style="margin-top:4px; font-size:0.78rem;">⚠️ This application is for informational purposes only. Always consult a qualified medical professional for diagnosis and treatment.</p>
+</footer>
+<script>
+    // Auto-dismiss alerts
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(el => el.style.display = 'none');
+    }, 5000);
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

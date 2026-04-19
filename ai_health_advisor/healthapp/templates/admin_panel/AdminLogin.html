@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login – AI Health Advisor{% endblock %}
+
+{% block content %}
+<div style="min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:2rem;background-color: #F5F7F6;">
+    <div style="background:white;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:3rem;width:100%;max-width:420px;">
+        <div style="text-align:center;margin-bottom:2rem;">
+            <div style="width:80px;height:80px;background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem;box-shadow:0 8px 20px rgba(231,76,60,.3);">🛡️</div>
+            <h2 style="font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;color:#c0392b;">Admin Portal</h2>
+            <p style="color:#7f8c8d;margin-top:.5rem;font-size:.9rem;">AI Health Advisor Administration</p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Admin Username</label>
+                <input type="text" name="loginid" class="form-control" placeholder="admin" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-block btn-lg" style="background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;margin-top:.5rem;">
+                <i class="fas fa-shield-alt"></i> Admin Sign In
+            </button>
+        </form>
+        <div style="text-align:center;margin-top:1.5rem;font-size:.85rem;color:#7f8c8d;">
+            <a href="{% url 'user_login' %}" style="color:#0f4c81;font-weight:600;text-decoration:none;">← Back to User Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

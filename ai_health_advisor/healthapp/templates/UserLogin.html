@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Login – AI Health Advisor{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-container {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e3f2fd 100%);
+}
+.auth-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(15,76,129,0.15);
+    padding: 3rem;
+    width: 100%;
+    max-width: 440px;
+}
+.auth-header { text-align: center; margin-bottom: 2rem; }
+.auth-icon {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, #16634f, #15a07b);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1rem;
+    box-shadow: 0 8px 20px rgba(15,76,129,0.3);
+}
+.auth-header h2 { font-family: 'Poppins', sans-serif; font-size: 1.7rem; font-weight: 700; color: black; }
+.auth-header p { color: #16634f; margin-top: 0.5rem; }
+.input-group { position: relative; }
+.input-icon {
+    position: absolute; left: 12px;
+    top: 50%; transform: translateY(-50%);
+    color: #16634f; font-size: 0.9rem;
+}
+.input-group .form-control { padding-left: 36px; }
+.divider {
+    text-align: center;
+    position: relative;
+    margin: 1.5rem 0;
+    color: #16634f;
+    font-size: 0.85rem;
+}
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0;
+    width: calc(50% - 25px);
+    height: 1px;
+    background: #dde3ea;
+}
+.divider::after {
+    content: '';
+    position: absolute;
+    top: 50%; right: 0;
+    width: calc(50% - 25px);
+    height: 1px;
+    background: #a0afc0;
+}
+.admin-link {
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #16634f;
+}
+.admin-link a { color: #e74c3c; font-weight: 600; text-decoration: none; }
+.auth-footer { text-align: center; margin-top: 1.5rem; color: #16634f; font-size: 0.9rem; }
+.auth-footer a { color: #093d2f; font-weight: 700; text-decoration: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">🔑</div>
+            <h2>Welcome Back</h2>
+            <p>Sign in to your AI Health Advisor account</p>
+        </div>
+
+        <form method="POST" action="{% url 'user_login' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" name="loginid" class="form-control" placeholder="Enter your username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" name="pswd" class="form-control" placeholder="Enter your password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:0.5rem;">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{% url 'user_register' %}">Create one free</a>
+        </div>
+
+        <div class="admin-link">
+            Admin access? <a href="{% url 'admin_login' %}"><i class="fas fa-shield-alt"></i> Admin Panel</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

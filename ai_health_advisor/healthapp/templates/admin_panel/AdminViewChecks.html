@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}All Symptom Checks – Admin{% endblock %}
+
+{% block content %}
+<div style="background:linear-gradient( #16634f, #15a07b 60%, #20bd93 100%);padding:2rem;color:white;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+        <h1 style="font-family:'Poppins',sans-serif;font-size:1.5rem;font-weight:700;">🩺 All Symptom Checks</h1>
+        <p style="opacity:.7;margin-top:.25rem;">{{ checks|length }} total records</p>
+    </div>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline" style="border-color:rgba(255,255,255,.5);color:white;">← Dashboard</a>
+</div>
+
+<div class="main-content">
+    <div class="card">
+        {% if checks %}
+        <div style="overflow-x:auto;">
+            <table class="table">
+                <thead><tr>
+                    <th>#</th><th>User</th><th>Date</th><th>Symptoms</th>
+                    <th>Conditions</th><th>Severity</th>
+                </tr></thead>
+                <tbody>
+                {% for check in checks %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><strong>{{ check.user.name|default:"Guest" }}</strong><br><small style="color:#7f8c8d;">@{{ check.user.loginid|default:"–" }}</small></td>
+                    <td style="white-space:nowrap;">{{ check.checked_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ check.detected_symptoms|truncatechars:60 }}</td>
+                    <td>{{ check.possible_conditions|truncatechars:70 }}</td>
+                    <td><span class="badge badge-{{ check.severity }}">{{ check.severity|capfirst }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:#7f8c8d;text-align:center;padding:3rem;">No symptom checks recorded yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

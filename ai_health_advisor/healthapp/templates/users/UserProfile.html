@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Profile – AI Health Advisor{% endblock %}
+
+{% block content %}
+<div style="background:linear-gradient( #16634f, #15a07b 60%, #20bd93 100%);padding:2rem;color:white;text-align:center;">
+    <div style="width:80px;height:80px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem;">👤</div>
+    <h2 style="font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;">{{ user.name }}</h2>
+    <p style="opacity:.8;margin-top:.25rem;">@{{ user.loginid }}</p>
+</div>
+
+<div class="main-content" style="max-width:700px;margin:0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">👤</div>
+            <h2>Profile Information</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+            {% for label,value in profile_fields %}
+            <div style="background:#f8f9fa;border-radius:12px;padding:1rem;">
+                <div style="font-size:.78rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;">{{ label }}</div>
+                <div style="font-size:1rem;font-weight:600;color:#2c3e50;margin-top:.25rem;">{{ value|default:"Not provided" }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div style="text-align:center;">
+        <a href="{% url 'user_logout' %}" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+        </a>
+    </div>
+</div>
+{% endblock %}

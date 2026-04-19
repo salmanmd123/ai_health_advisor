@@ -1,0 +1,46 @@
+# 🔹 Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔹 Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# 🔹 Django stuff
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# 🔹 Environment variables (VERY IMPORTANT)
+.env
+
+# 🔹 OS files
+.DS_Store
+Thumbs.db
+
+# 🔹 IDE / Editor files
+.vscode/
+.idea/
+
+# 🔹 Jupyter Notebook checkpoints (if any)
+.ipynb_checkpoints/
+
+# 🔹 Matplotlib cache
+.matplotlib/
+
+# 🔹 Temporary files
+*.swp
+*.swo
+
+# 🔹 Build / distribution
+build/
+dist/
+*.egg-info/
+
+# 🔹 Node modules (if any frontend used)
+node_modules/

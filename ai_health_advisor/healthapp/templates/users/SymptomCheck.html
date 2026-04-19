@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}Symptom Checker – AI Health Advisor{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: linear-gradient(135deg,  #16634f, #15a07b 60%, #20bd93 100%);
+    padding: 2.5rem 2rem;
+    color: white;
+    text-align: center;
+}
+.page-header h1 { font-family:'Poppins',sans-serif; font-size:2rem; font-weight:700; }
+.page-header p { opacity:.85; margin-top:.5rem; font-size:1rem; }
+
+.symptom-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+.chip {
+    background:#e3f2fd; color:#16634f; border:none;
+    padding:6px 14px; border-radius:20px; cursor:pointer;
+    font-size:.85rem; font-weight:600; transition:all .2s; font-family:inherit;
+}
+.chip:hover { background:#16634f; color:white; transform:translateY(-1px); }
+
+.result-section { animation: fadeIn .5s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+.emergency-banner {
+    background:linear-gradient(135deg,#c0392b,#e74c3c);
+    color:white; border-radius:14px; padding:1.25rem 1.5rem;
+    display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;
+    animation: pulse-border 1.5s infinite;
+}
+@keyframes pulse-border { 0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,.4)} 50%{box-shadow:0 0 0 8px rgba(231,76,60,0)} }
+
+.severity-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:8px 20px; border-radius:30px; font-weight:700; font-size:.95rem;
+}
+
+.condition-card {
+    border:2px solid #eef2f7; border-radius:14px;
+    padding:1.5rem; margin-bottom:1rem;
+    transition:border-color .2s, transform .2s;
+    background:white;
+}
+.condition-card:hover { border-color:#00b4d8; transform:translateX(4px); }
+.condition-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+.condition-name { font-size:1.1rem; font-weight:700; display:flex; align-items:center; gap:.5rem; }
+.confidence-bar {
+    background:#eef2f7; border-radius:10px; height:8px; width:100%;
+    overflow:hidden; margin:8px 0;
+}
+.confidence-fill { height:100%; border-radius:10px; transition:width 1s ease; }
+
+.symptom-tag {
+    display:inline-flex; align-items:center; gap:6px;
+    background:#e8f5e9; color:#16634f;
+    padding:5px 12px; border-radius:20px; font-size:.82rem; font-weight:600; margin:3px;
+}
+.advice-list { list-style:none; padding:0; }
+.advice-list li {
+    padding:8px 0; border-bottom:1px solid #f0f4f8;
+    font-size:.9rem; display:flex; align-items:flex-start; gap:8px;
+}
+.advice-list li:last-child { border-bottom:none; }
+.advice-list li::before { content:'✓'; color:#16634f; font-weight:700; flex-shrink:0; margin-top:1px; }
+
+.med-pill {
+    display:inline-block; background:#f3e5f5; color:#6a1b9a;
+    padding:4px 12px; border-radius:20px; font-size:.8rem; font-weight:600; margin:3px;
+}
+
+.chart-container { text-align:center; }
+.chart-container img { max-width:100%; border-radius:12px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div style="font-size:2.5rem;margin-bottom:.5rem;">🩺</div>
+    <h1>AI Symptom Checker</h1>
+    <p>Describe your symptoms in plain language – our AI will analyze and advise you</p>
+</div>
+
+<div class="main-content">
+    <div class="grid-2" style="align-items:start;">
+        <!-- INPUT PANEL -->
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📝</div>
+                    <h2>Describe Your Symptoms</h2>
+                </div>
+
+                <!-- Quick-select chips -->
+                <p style="font-size:.85rem;color:#7f8c8d;margin-bottom:.5rem;font-weight:600;">COMMON SYMPTOMS – Click to add:</p>
+                <div class="symptom-chips">
+                    {% for label in "Headache,Fever,Cough,Sore Throat,Fatigue,Nausea,Dizziness,Body Ache,Runny Nose,Chest Pain,Back Pain,Shortness of Breath"|split:"," %}
+                    <button class="chip" onclick="addSymptom('{{ label }}')">{{ label }}</button>
+                    {% endfor %}
+                </div>
+
+                <form method="POST" id="symptomForm">
+                    {% csrf_token %}
+                    <div class="form-group" style="margin-top:1rem;">
+                        <label>Your Symptoms</label>
+                        <textarea name="symptoms" id="symptomsInput" class="form-control" rows="5"
+                            placeholder="Example: I have a bad headache, high fever, and my body is aching. I also feel very tired and have a sore throat."
+                            required>{{ form.symptoms.value|default:'' }}</textarea>
+                        <p style="font-size:.8rem;color:#2b9c7e;margin-top:4px;">The more detail you provide, the better the analysis.</p>
+                    </div>
+                    <button type="submit" class="btn btn-accent btn-block btn-lg">
+                        <i class="fas fa-search"></i> Analyze My Symptoms
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="card" style="border-left:4px solid #16634f;">
+                <h3 style="font-size:1rem;font-weight:700;margin-bottom:.75rem;color:#16634f;">💡 Tips for Better Results</h3>
+                <ul style="list-style:none;padding:0;">
+                    <li style="padding:5px 0;font-size:.875rem;"><span style="color:black;font-weight:700;">→</span> Mention all symptoms, even minor ones</li>
+                    <li style="padding:5px 0;font-size:.875rem;"><span style="color:black;font-weight:700;">→</span> Include duration (e.g., "fever for 2 days")</li>
+                    <li style="padding:5px 0;font-size:.875rem;"><span style="color:black;font-weight:700;">→</span> Describe intensity (mild, moderate, severe)</li>
+                    <li style="padding:5px 0;font-size:.875rem;"><span style="color:black;font-weight:700;">→</span> Mention any recent travel or exposure</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RESULTS PANEL -->
+        <div>
+            {% if result %}
+            <div class="result-section">
+
+                <!-- Emergency Banner -->
+                {% if result.is_emergency %}
+                <div class="emergency-banner">
+                    <span style="font-size:2rem;">🚨</span>
+                    <div>
+                        <strong style="font-size:1rem;">EMERGENCY WARNING</strong>
+                        <p style="font-size:.9rem;opacity:.9;margin-top:.25rem;">Your symptoms may indicate a serious condition. Please seek immediate medical attention.</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Overall Severity -->
+                <div class="card" style="border-top:4px solid #16634f;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+                        <div>
+                            <p style="font-size:.8rem;color:#16634f;font-weight:700;text-transform:uppercase;letter-spacing:.7px;">Overall Assessment</p>
+                            <div class="severity-badge" style="background:#16634f20;color:#16634f;margin-top:.5rem;">
+                                {{ result.severity_info.icon }} {{ result.severity_info.label }} Severity
+                            </div>
+                            <p style="font-size:.85rem;color:#555;margin-top:.5rem;">{{ result.severity_info.action }}</p>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:2.5rem;font-weight:800;color:black;">{{ result.symptom_count }}</div>
+                            <div style="font-size:.8rem;color:#16634f;">Symptoms Detected</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detected Symptoms -->
+                {% if result.symptoms_display %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg, #16634f, #15a07b);">🔍</div>
+                        <h2>Detected Symptoms</h2>
+                    </div>
+                    <div>
+                        {% for s in result.symptoms_display %}
+                        <span class="symptom-tag"><i class="fas fa-check-circle"></i> {{ s }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Confidence Chart -->
+                {% if chart_img and result.conditions %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg, #16634f, #15a07b);">📊</div>
+                        <h2>Condition Match Analysis</h2>
+                    </div>
+                    <div class="chart-container">
+                        <img src="data:image/png;base64,{{ chart_img }}" alt="Condition Match Chart">
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Possible Conditions -->
+                {% if result.conditions %}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg,#e74c3c,#c0392b);">🏥</div>
+                        <h2>Possible Conditions</h2>
+                    </div>
+                    {% for cond in result.conditions %}
+                    <div class="condition-card">
+                        <div class="condition-header">
+                            <div class="condition-name">
+                                <span style="font-size:1.4rem;">{{ cond.emoji }}</span>
+                                {{ cond.name }}
+                            </div>
+                            <span class="badge badge-{{ cond.severity }}">{{ cond.severity|capfirst }}</span>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <div style="display:flex;justify-content:space-between;font-size:.8rem;color:#7f8c8d;margin-bottom:4px;">
+                                <span>Match Confidence</span><span style="font-weight:700;color:{{ cond.color }};">{{ cond.score }}%</span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width:{{ cond.score }}%;background:{{ cond.color }};"></div>
+                            </div>
+                        </div>
+                        <details>
+                            <summary style="cursor:pointer;font-weight:600;font-size:.9rem;color:#0f4c81;padding:6px 0;">
+                                View Advice & Medications
+                            </summary>
+                            <div style="margin-top:1rem;">
+                                <p style="font-size:.8rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.5rem;">Health Advice</p>
+                                <ul class="advice-list">
+                                    {% for tip in cond.advice %}<li>{{ tip }}</li>{% endfor %}
+                                </ul>
+                                <p style="font-size:.8rem;font-weight:700;color:#7f8c8d;text-transform:uppercase;letter-spacing:.5px;margin:1rem 0 .5rem;">Common Medications</p>
+                                {% for med in cond.medications %}<span class="med-pill">{{ med }}</span>{% endfor %}
+                                {% if cond.doctor_needed %}
+                                <div style="margin-top:1rem;background:#fff3cd;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;font-weight:600;color:#856404;">
+                                    ⚕️ A doctor visit is recommended for this condition.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </details>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="card" style="text-align:center;padding:2.5rem;">
+                    <div style="font-size:3rem;margin-bottom:1rem;">🤔</div>
+                    <h3>No specific conditions matched</h3>
+                    <p style="color:#7f8c8d;margin-top:.5rem;">Try describing your symptoms in more detail for a better analysis.</p>
+                </div>
+                {% endif %}
+
+                <!-- General Advice -->
+                <div class="card" style="border-left:4px solid #16634f;">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg, #16634f, #15a07b);">💊</div>
+                        <h2>General Health Advice</h2>
+                    </div>
+                    <ul class="advice-list">
+                        {% for advice in result.general_advice %}
+                        <li>{{ advice }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div style="background:#fff8e1;border-radius:12px;padding:1rem 1.25rem;font-size:.82rem;color:#856404;border:1px solid #ffe0b2;">
+                    ⚠️ <strong>Disclaimer:</strong> This analysis is AI-generated and for informational purposes only. It does not constitute medical advice. Always consult a qualified healthcare professional.
+                </div>
+            </div>
+            {% else %}
+            <div class="card" style="text-align:center;padding:3rem;">
+                <div style="font-size:4rem;margin-bottom:1rem;">🏥</div>
+                <h3 style="color:#16634f;font-size:1.2rem;">Ready to Analyze</h3>
+                <p style="color:#7f8c8d;margin-top:.5rem;">Enter your symptoms on the left and click Analyze to get AI-powered health insights.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addSymptom(label) {
+    const ta = document.getElementById('symptomsInput');
+    const val = ta.value.trim();
+    ta.value = val ? val + ', ' + label.toLowerCase() : label.toLowerCase();
+    ta.focus();
+}
+</script>
+{% endblock %}

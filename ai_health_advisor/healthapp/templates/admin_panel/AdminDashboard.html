@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard – AI Health Advisor{% endblock %}
+
+{% block extra_css %}
+<style>
+.admin-header {
+    background: linear-gradient( #16634f, #15a07b 60%, #20bd93 100%);
+    padding:2rem; color:white; display:flex; align-items:center; justify-content:space-between;
+}
+.admin-stat {
+    background:white; border-radius:16px;
+    padding:1.5rem; text-align:center;
+    box-shadow:0 4px 20px rgba(0,0,0,.08);
+    border-top:4px solid #0f4c81;
+}
+.admin-stat.red { border-top-color:#e74c3c; }
+.admin-stat.green { border-top-color:#27ae60; }
+.admin-stat.orange { border-top-color:#f39c12; }
+.admin-stat-value { font-size:2.5rem; font-weight:800; color:#0f4c81; }
+.admin-stat.red .admin-stat-value { color:#e74c3c; }
+.admin-stat.green .admin-stat-value { color:#27ae60; }
+.admin-stat.orange .admin-stat-value { color:#f39c12; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <div>
+        <h1 style="font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:700;">🛡️ Admin Dashboard</h1>
+        <p style="opacity:.7;margin-top:.25rem;">AI Health Advisor – System Overview</p>
+    </div>
+    <a href="{% url 'admin_logout' %}" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main-content">
+    <div class="grid-4" style="margin-bottom:1.5rem;">
+        <div class="admin-stat">
+            <div style="font-size:2rem;margin-bottom:.5rem;">👥</div>
+            <div class="admin-stat-value">{{ total_users }}</div>
+            <div style="color:#16634f;font-size:.85rem;font-weight:600;">Total Users</div>
+        </div>
+        <div class="admin-stat green">
+            <div style="font-size:2rem;margin-bottom:.5rem;">🩺</div>
+            <div class="admin-stat-value">{{ total_checks }}</div>
+            <div style="color:#7f8c8d;font-size:.85rem;font-weight:600;">Symptom Checks</div>
+        </div>
+        <div class="admin-stat orange">
+            <div style="font-size:2rem;margin-bottom:.5rem;">🤖</div>
+            <div class="admin-stat-value">10+</div>
+            <div style="color:#7f8c8d;font-size:.85rem;font-weight:600;">Conditions in DB</div>
+        </div>
+        <div class="admin-stat red">
+            <div style="font-size:2rem;margin-bottom:.5rem;">✅</div>
+            <div class="admin-stat-value">Live</div>
+            <div style="color:#7f8c8d;font-size:.85rem;font-weight:600;">System Status</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Chart -->
+        {% if severity_chart %}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                <h2>Checks by Severity</h2>
+            </div>
+            <img src="data:image/png;base64,{{ severity_chart }}" style="width:100%;border-radius:10px;" alt="Severity Chart">
+        </div>
+        {% endif %}
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">⚡</div>
+                <h2>Quick Actions</h2>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.75rem;">
+                <a href="{% url 'admin_checks' %}" class="btn btn-primary"><i class="fas fa-list"></i> View All Symptom Checks</a>
+                <a href="{% url 'admin_logout' %}" class="btn btn-outline"><i class="fas fa-sign-out-alt"></i> Admin Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">👥</div>
+            <h2>Registered Users</h2>
+        </div>
+        {% if users %}
+        <div style="overflow-x:auto;">
+            <table class="table">
+                <thead><tr>
+                    <th>#</th><th>Name</th><th>Username</th><th>Email</th>
+                    <th>Mobile</th><th>Age</th><th>Gender</th><th>Status</th>
+                </tr></thead>
+                <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><strong>{{ u.name }}</strong></td>
+                    <td><code>{{ u.loginid }}</code></td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.mobile }}</td>
+                    <td>{{ u.age|default:"–" }}</td>
+                    <td>{{ u.gender|default:"–" }}</td>
+                    <td><span class="badge" style="background:#d4edda;color:#155724;">{{ u.status }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="color:#7f8c8d;text-align:center;padding:2rem;">No users registered yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
