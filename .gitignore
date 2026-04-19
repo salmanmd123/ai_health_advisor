@@ -4,43 +4,46 @@ __pycache__/
 *.pyo
 *.pyd
 
-# 🔹 Virtual environment
+# 🔹 Virtual environments
 venv/
 env/
 ENV/
 .venv/
 
-# 🔹 Django stuff
-*.log
+# 🔹 Django database (local only)
 db.sqlite3
-media/
+
+# 🔹 Static build files (generated)
 staticfiles/
 
-# 🔹 Environment variables (VERY IMPORTANT)
+# 🔹 Media files (optional uploads)
+media/
+
+# 🔹 Environment variables (IMPORTANT)
 .env
+
+# 🔹 Logs
+*.log
 
 # 🔹 OS files
 .DS_Store
 Thumbs.db
 
-# 🔹 IDE / Editor files
+# 🔹 IDE files
 .vscode/
 .idea/
-
-# 🔹 Jupyter Notebook checkpoints (if any)
-.ipynb_checkpoints/
-
-# 🔹 Matplotlib cache
-.matplotlib/
 
 # 🔹 Temporary files
 *.swp
 *.swo
 
-# 🔹 Build / distribution
+# 🔹 Python build files
 build/
 dist/
 *.egg-info/
 
-# 🔹 Node modules (if any frontend used)
+# 🔹 Jupyter (if any)
+.ipynb_checkpoints/
+
+# 🔹 Node modules (if you ever add frontend)
 node_modules/
