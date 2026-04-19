@@ -1,62 +1,64 @@
 # 🏥 AI Health Advisor
 
-**St. Martin's Engineering College – Department of AI & ML**  
-**Batch 02** | A. Sravani (23K81A7302), A. Sai Prasad (23K81A7305), MD. Salman (23K81A7336)  
-**Guide:** Mr. M. Rajaram, Assistant Professor
-
 ---
 
 ## 📋 Project Overview
 
-An intelligent healthcare web application built with **Django** that provides health advice based on symptoms described by the user. The system uses **Natural Language Processing (NLP)** to analyze symptom input, **machine learning-inspired scoring** (Precision, Recall, F1) to match conditions, and **Seaborn/Matplotlib** for data visualization.
+AI Health Advisor is an intelligent healthcare web application built using **Django** that analyzes user-provided symptoms and suggests possible medical conditions along with severity levels and general health advice.
+
+The system leverages **Natural Language Processing (NLP)** to process free-text input and uses a **machine learning-inspired scoring approach (Precision, Recall, F1 Score)** to match symptoms with potential diseases. It also provides **data visualizations** using Seaborn and Matplotlib to enhance interpretability.
 
 ---
 
 ## 🛠️ Tech Stack & Modules
 
-| Module | Purpose |
-|--------|---------|
-| **Django** | Web framework, ORM, session management, forms |
-| **Seaborn** | Statistical data visualization (confidence charts, severity graphs) |
-| **Matplotlib** | Backend for generating PNG charts embedded in pages |
-| **scikit-learn** | F1-score based symptom-condition matching |
-| **NLTK** | NLP preprocessing (tokenization, text normalization) |
-| **SQLite** | Database via Django ORM |
+| Module           | Purpose                                          |
+| ---------------- | ------------------------------------------------ |
+| **Django**       | Backend framework, ORM, authentication, routing  |
+| **Seaborn**      | Statistical data visualization (charts & graphs) |
+| **Matplotlib**   | Chart rendering for web display                  |
+| **scikit-learn** | F1-score based condition matching logic          |
+| **NLTK**         | NLP preprocessing (tokenization, normalization)  |
+| **SQLite**       | Lightweight database via Django ORM              |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.9+
-- pip
+
+* Python 3.9+
+* pip
 
 ### Installation & Run
 
 ```bash
-# 1. Navigate to project directory
+# Navigate to project directory
 cd ai_health_advisor
 
-# 2. Install dependencies
-pip install Django seaborn matplotlib scikit-learn nltk Pillow
+# Install dependencies
+pip install -r requirements.txt
 
-# 3. Run migrations
-python manage.py makemigrations healthapp
+# Run migrations
+python manage.py makemigrations
 python manage.py migrate
 
-# 4. Start the server
+# Start server
 python manage.py runserver
 ```
 
-OR just run the setup script:
+### Alternative (Setup Script)
+
 ```bash
 bash setup_and_run.sh
 ```
 
-### Access the App
-- **User App:** http://127.0.0.1:8000
-- **Admin Panel:** http://127.0.0.1:8000/admin-login/
-  - Username: `admin` | Password: `admin123`
+---
+
+## 🌐 Access the Application
+
+* **User Interface:** http://127.0.0.1:8000
+* **Admin Panel:** http://127.0.0.1:8000/admin-login/
 
 ---
 
@@ -67,16 +69,16 @@ ai_health_advisor/
 ├── manage.py
 ├── requirements.txt
 ├── setup_and_run.sh
-├── ai_health_advisor/          # Django project config
+├── ai_health_advisor/
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-└── healthapp/                  # Main application
-    ├── models.py               # UserRegistrationModel, SymptomCheckHistory
-    ├── forms.py                # UserRegistrationForm, SymptomInputForm
-    ├── views.py                # All view functions
-    ├── urls.py                 # URL routing
-    ├── ai_engine.py            # NLP + AI analysis engine
+└── healthapp/
+    ├── models.py
+    ├── forms.py
+    ├── views.py
+    ├── urls.py
+    ├── ai_engine.py
     ├── templatetags/
     │   └── custom_filters.py
     └── templates/
@@ -99,53 +101,83 @@ ai_health_advisor/
 
 ## ✨ Features
 
-### User Features
-- ✅ User Registration & Login with session management
-- ✅ AI-powered symptom checker (NLP-based)
-- ✅ 30+ symptom keywords recognized
-- ✅ 10+ disease/condition profiles
-- ✅ Confidence scoring using F1-like metric (Precision × Recall)
-- ✅ Seaborn bar charts showing condition match confidence
-- ✅ Severity assessment (Mild 🟢 / Moderate 🟡 / Severe 🔴)
-- ✅ Emergency symptom detection
-- ✅ Detailed health advice per condition
-- ✅ Suggested medications (informational only)
-- ✅ Health check history tracking
-- ✅ Quick-select symptom chips on the checker page
+### 👤 User Features
 
-### Admin Features
-- ✅ Admin login portal
-- ✅ Dashboard with total user/check counts
-- ✅ Seaborn chart: checks grouped by severity
-- ✅ Full user management table
-- ✅ View all symptom check records
+* User registration and login system
+* AI-powered symptom analysis using NLP
+* Recognition of 30+ symptoms
+* Prediction of 10+ medical conditions
+* Confidence scoring using F1-like metric
+* Visual charts for condition confidence
+* Severity classification (Mild / Moderate / Severe)
+* Emergency symptom detection
+* Personalized health advice
+* Suggested medications (informational only)
+* User history tracking
+* Quick symptom selection interface
+
+---
+
+### 🛠️ Admin Features
+
+* Secure admin login
+* Dashboard with user and activity insights
+* Visualization of severity distribution
+* User management system
+* View all symptom check records
 
 ---
 
 ## 🧠 AI Engine Details (`ai_engine.py`)
 
-### NLP Processing
-1. **Text Preprocessing** — lowercase, remove punctuation, normalize whitespace
-2. **Keyword Extraction** — matches 30+ symptom keywords to 30 symptom categories
-3. **Condition Scoring** — computes F1-like score:
-   - **Precision** = matched symptoms / total detected symptoms
-   - **Recall** = matched symptoms / total disease symptoms
-   - **F1 Score** = 2 × (P × R) / (P + R)
-4. **Severity Assignment** — based on top matched condition
-5. **Emergency Detection** — flags chest pain, shortness of breath, bleeding, etc.
+### 🔍 NLP Processing Pipeline
 
-### Conditions Database
-- Common Cold, Influenza, Gastroenteritis
-- Migraine, Allergic Reaction
-- Hypertension, Anxiety Disorder
-- UTI, Back Pain, Depression
+1. Text preprocessing (lowercasing, punctuation removal, normalization)
+2. Keyword-based symptom extraction
+3. Mapping symptoms to predefined categories
+4. Condition scoring using F1-like metric
 
----
+### 📊 Scoring Logic
 
-## ⚠️ Medical Disclaimer
+* **Precision** = Matched Symptoms / Total Detected Symptoms
+* **Recall** = Matched Symptoms / Total Condition Symptoms
+* **F1 Score** = 2 × (Precision × Recall) / (Precision + Recall)
 
-This application is for **educational and informational purposes only**. It does not replace professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider.
+### ⚠️ Additional Intelligence
+
+* Severity classification based on condition score
+* Emergency detection for critical symptoms
+* Ranked list of possible conditions
 
 ---
 
-*Developed as part of the AI & ML curriculum at St. Martin's Engineering College, Secunderabad.*
+## 🧬 Supported Conditions
+
+* Common Cold
+* Influenza
+* Gastroenteritis
+* Migraine
+* Allergic Reaction
+* Hypertension
+* Anxiety Disorder
+* Urinary Tract Infection (UTI)
+* Back Pain
+* Depression
+
+---
+
+## ⚠️ Disclaimer
+
+This application is intended for **educational and informational purposes only**. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider.
+
+---
+
+## 📌 Future Enhancements
+
+* Integration with real medical datasets
+* Machine learning model for improved accuracy
+* Chatbot-based interaction
+* Mobile application version
+* Doctor consultation integration
+
+---
