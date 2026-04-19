@@ -7,7 +7,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-ai-health-advisor-secret-key-2026'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-key')
 
 DEBUG = True
 
