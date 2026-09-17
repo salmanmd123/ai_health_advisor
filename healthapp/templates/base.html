@@ -276,6 +276,7 @@
             <li><a href="{% url 'user_history' %}"><i class="fas fa-history"></i> History</a></li>
             <li><a href="{% url 'user_profile' %}"><i class="fas fa-user"></i> Profile</a></li>
             <li><a href="{% url 'user_logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            
         {% else %}
             <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a></li>
             <li><a href="{% url 'user_login' %}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
@@ -298,7 +299,7 @@
 {% block content %}{% endblock %}
 
 <footer class="footer">
-    <p>© 2026 <strong>AI Health Advisor</strong> &nbsp;|&nbsp; Developed with 🩶 by <strong>Mohammed Salman.</strong></p>
+    <p>© 2026 <strong>AI Health Advisor</strong> &nbsp;|&nbsp; Developed with 🩶</p>
     <p style="margin-top:4px; font-size:0.78rem;">⚠️ This application is for informational purposes only. Always consult a qualified medical professional for diagnosis and treatment.</p>
 </footer>
 <script>
